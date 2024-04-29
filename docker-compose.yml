@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  redis-db:
+    image: redis:7
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data:/data
+    command: ["--save", "1", "1"]
+
+  flask-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: nicoleolv/health-app:1.0
+    ports:
+      - 5000:5000
+    depends_on:
+      - redis-db
+    environment:
+      - REDIS_IP=redis-db
+    command: ["python3", "flask_api.py"]
+
+  worker:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: nicoleolv/gene-app:1.0
+    depends_on:
+      - redis-db
+    command: ["python3", "worker.py"]
