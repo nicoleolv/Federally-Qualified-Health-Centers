@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-prod-api-deployment
+  labels:
+    app: flask-api
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: flask-api
+  template:
+    metadata:
+      labels:
+        app: flask-api
+    spec:
+      containers:
+      - name: flask-api
+        image: danakim/fqhcs-app:1.0  # Update with your image name and tag
+        ports:
+        - containerPort: 5000  # Adjust port if needed
+        env:
+        - name: REDIS_IP
+          value: "redis-db"  # Update with your Redis service name
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data  # Adjust mount path as needed
+      volumes:
+      - name: data-volume
+        emptyDir: {}
