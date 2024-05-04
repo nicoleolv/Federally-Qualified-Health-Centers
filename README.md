@@ -60,15 +60,15 @@ To interact with the Flask API, use `curl` commmands as shown below:
   ```python
   curl localhost:5000/data
   ```
-  * To delete the data from Redis:
+* To delete the data from Redis:
   ```python
   curl -X DELETE localhost:5000/data
   ```
-  * To get a Y (yes) or N (no) if a subprogram grant is offered in healthcenter given site name:
+* To get a Y (yes) or N (no) if a subprogram grant is offered in healthcenter given site name:
   ```python
   curl localhost:5000/program/<sitename>
   ```
-  * To get all the site names in a city given city and state
+* To get all the site names in a city given city and state
   ```python
   curl localhost:5000/location/<state>/<city>
   ```
@@ -91,9 +91,9 @@ To interact with the Flask API, use `curl` commmands as shown below:
    ```python
    curl localhost:5000/jobs
    ```
-  * To get job status:
+* To get the results of a job:
     ```python
-    curl localhost:5000/jobs/<jobid>
+    curl localhost:5000/results/<jobid>
     ```
   
 ## Kubernetes Cluster
@@ -152,14 +152,14 @@ root@py-debug-deployment-f484b4b99-tprrp:/# curl prod-api-nodeport-service:5000/
 | `/data`                                 | POST          | Posts all the FQHC data to redis          |
 | `/data`                                 | GET           | Returns a list of the whole FQHC dat      |
 | `/data`                                 | DELETE        | Deltes the FQHC data from redisv          |
-| `/program/<sitename>`                   | GET           |        |
-| `/location/<state>/<city>`              | GET           |    $1     |
-| `/healthcenter/<site_telephone_number>` | GET           |    $1     |
-| `/sites/<site_name>`                    | GET           |    $1     |
-| `/state/<state_name>`                   | GET           |    $1     |
-| `/jobs`                                 | POST          |    $1     |
-| `/jobs`                                 | GET           |    $1     |
-| `/results/<jobid>`                      | GET           |    $1     |
+| `/program/<sitename>`                   | GET           | Returns a Y (yes) or N (no) to specify if a subprogram grant is offered in given sitename       |
+| `/location/<state>/<city>`              | GET           | Returns all the site names in a city, state     |
+| `/healthcenter/<site_telephone_number>` | GET           | Returns all the data about the healthcenter     |
+| `/sites/<site_name>`                    | GET           | Retirns relevant information about given FQHC name     |
+| `/state/<state_name>`                   | GET           | Returns all site names in given state     |
+| `/jobs`                                 | POST          | Posts/creates a job      |
+| `/jobs`                                 | GET           | Returns all jobs on the queue     |
+| `/results/<jobid>`                      | GET           | Returns the results of a job    |
  
 
 ## Overview
