@@ -35,7 +35,9 @@ docker-compose up -d
 ```
 You should see something like this:
 ```python
-Creating ...
+Creating redis-db_1 ... done
+Creating worker_1   ... done
+Creating api_1      ... done 
 ```
 The app should be running now but verify with this command:
 ```python
