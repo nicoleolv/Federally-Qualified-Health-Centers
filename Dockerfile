@@ -1,9 +1,20 @@
-FROM python:3.10
+FROM python:3.9
 
+# Set working directory
 WORKDIR /app
 
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
+# Copy requirements file
+COPY requirements.txt .
 
-COPY src/flask_api.py src/worker.py src/jobs.py ./
-CMD ["python3"]
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
+COPY src/ .
+
+# Give permissions to dump.rdb
+# RUN chmod +r /app/data/dump.rdb
+
+# Command to run the application
+
+CMD ["python", "src/api.py"]
