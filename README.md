@@ -22,20 +22,7 @@ The FQGC data is available to the public and can be downloaded from data.world; 
 * `diagram.png`: Software diagram that depicts our working environment  
 
 ## Instructions
-### Pulling the Image
-To launch the containers, pull our images from dockerhub:
-```python
-docker pull nicoleolv/
-```
-Make sure you retrieved the image with:
-```python
-docker images
-```
-You should see something like this: 
-```python
-
-```
-## Or Build your own Image
+### Build the Image
 To build our docker image, run this command:
 ```python
 docker-compose build 
@@ -77,11 +64,38 @@ To interact with the Flask API, use `curl` commmands as shown below:
   ```python
   curl -X DELETE localhost:5000/data
   ```
-  * To get 
+  * To get a Y (yes) or N (no) if a subprogram grant is offered in healthcenter given site name:
   ```python
-  curl localhost:5000/sites
+  curl localhost:5000/program/<sitename>
   ```
-
+  * To get all the site names in a city given city and state
+  ```python
+  curl localhost:5000/location/<state>/<city>
+  ```
+* To get all information of a FQHC given their phone number:
+  ```python
+  curl localhost:5000/healthcare/<site_telephone_number>
+  ```
+* To get relevant information of a site given its name:
+  ```python
+  curl localhost:5000/sites/<sitename>
+  ```
+* To get all the site names in a given state:
+  ```python
+  curl localhost:5000/state/<state_name>
+  ```
+* To create a job:
+   ```python
+  curl localhost:5000/jobs -X POST -d {<state_name>}
+* To list all jobs on the queue:
+   ```python
+   curl localhost:5000/jobs
+   ```
+  * To get job status:
+    ```python
+    curl localhost:5000/jobs/<jobid>
+    ```
+  
 ## Kubernetes Cluster
 To set up the cluster, run these commands IN the kubernetes directory:
 ```python
@@ -132,18 +146,21 @@ Now you can curl the routes, as below, just like in docker, but instead of local
 root@py-debug-deployment-f484b4b99-tprrp:/# curl prod-api-nodeport-service:5000/jobs
 ```
 ## Interpreting the Output 
-| Route        | Method        | Result    |
-| -------------|:-------------:| ---------:|
-| `/help`      | GET           | $1600     |
-| `/data`      | POST          |   $12     |
-| `/data`      | GET           |    $1     |
-| `/data`      | DELETE        |    $1     |
-| `/sites`     | GET      |    $1     |
-| `/data`      | GET      |    $1     |
-| `/data`      | GET      |    $1     |
-| `/data`      | GET      |    $1     |
-| `/data`      | GET      |    $1     |
-
+| Route                                   | Method        | Result                                    |
+| ----------------------------------------|:-------------:| -----------------------------------------:|
+| `/help`                                 | GET           | Returns a string of all possible curls    |
+| `/data`                                 | POST          | Posts all the FQHC data to redis          |
+| `/data`                                 | GET           | Returns a list of the whole FQHC dat      |
+| `/data`                                 | DELETE        | Deltes the FQHC data from redisv          |
+| `/program/<sitename>`                   | GET           |        |
+| `/location/<state>/<city>`              | GET           |    $1     |
+| `/healthcenter/<site_telephone_number>` | GET           |    $1     |
+| `/sites/<site_name>`                    | GET           |    $1     |
+| `/state/<state_name>`                   | GET           |    $1     |
+| `/jobs`                                 | POST          |    $1     |
+| `/jobs`                                 | GET           |    $1     |
+| `/results/<jobid>`                      | GET           |    $1     |
+ 
 
 ## Overview
 Overall, this Flask Web Application and use of the Redis Database provides an easy way to analyze this large set of data. Additionally docker and kubernetes facilitate the distribution of our project. The whole data may be returned & may be deleted, or only the data of a specific site given site name may be returned, while also being able to post a job that the worker will perform an analysis on. It returns all this data fast and efficiently with the help of Redis and Flask!  
