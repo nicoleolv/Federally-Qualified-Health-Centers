@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+    redis-db:
+        image: redis:7
+        ports:
+            - 6379:6379
+        volumes:
+            - ./data:/data
+        command: ["--save", "1", "1"]
+        networks:
+            - homework08_network
+            
+    flask-api:
+        build:
+            context: ./
+            dockerfile: Dockerfile  # Ensure that your Dockerfile is correctly configured
+        image: danakim/fqhcs-app:1.0  # Verify the image tag
+        ports:
+            - 5000:5000
+        depends_on:
+            - redis-db
+        environment:
+            - REDIS_IP=redis-db
+        volumes:
+            - ./data:/app/data  # Mount data directory for Flask app
+
+        command: ["python", "api.py"]  # Ensure this command is correct
+        networks:
+            - homework08_network
+
+    worker:
+        build:
+            context: ./
+            dockerfile: Dockerfile  # Ensure that your Dockerfile is correctly configured
+        image: danakim/fqhcs-app:1.0  # Verify the image tag
+        depends_on:
+            - redis-db
+        volumes:
+            - ./data:/app/data  # Mount data directory for worker
+        environment:  # Manually set REDIS_IP here
+            - REDIS_IP=redis-db
+        command: ["python", "worker.py"]  # Ensure this command is correct
+        networks:
+            - homework08_network
+
+networks:
+    homework08_network:
+        driver: bridge
